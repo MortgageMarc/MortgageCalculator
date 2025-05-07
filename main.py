@@ -6,19 +6,18 @@ app = Flask(__name__)
 def monthly_payment():
     try:
         data = request.get_json()
-        loan_amount = data.get("loan_amount")
-        interest_rate = data.get("interest_rate")
-        loan_term = data.get("loan_term")
+        principal = data.get("principal")
+        rate = data.get("rate")
+        years = data.get("years")
 
-        if not all([loan_amount, interest_rate, loan_term]):
+        if not all([principal, rate, years]):
             return jsonify({"error": "All values must be provided and greater than 0"}), 400
 
-        monthly_rate = interest_rate / 100 / 12
-        num_payments = loan_term * 12
-        monthly_payment = loan_amount * (monthly_rate / (1 - (1 + monthly_rate) ** -num_payments))
+        monthly_rate = rate / 100 / 12
+        num_payments = years * 12
+        monthly_payment = principal * (monthly_rate / (1 - (1 + monthly_rate) ** -num_payments))
 
         return jsonify({"monthly_payment": round(monthly_payment, 2)})
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
