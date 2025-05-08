@@ -4,14 +4,12 @@ app = Flask(__name__)
 
 @app.route('/api/monthly-payment', methods=['POST'])
 def monthly_payment():
-    try:
-        data = request.get_json()
-        principal = data.get("principal")
-        rate = data.get("rate")
-        years = data.get("years")
+    data = request.get_json()
 
-        if not all([principal, rate, years]):
-            return jsonify({"error": "All values must be provided and greater than 0"}), 400
+    try:
+        principal = data['principal']
+        rate = data['rate']
+        years = data['years']
 
         monthly_rate = rate / 100 / 12
         num_payments = years * 12
@@ -19,7 +17,7 @@ def monthly_payment():
 
         return jsonify({"monthly_payment": round(monthly_payment, 2)})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == "__main__":
     app.run()
